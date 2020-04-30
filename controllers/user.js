@@ -23,6 +23,7 @@ exports.getAllUsers = (req, res) => {
         user.salt = undefined;
         user.encry_password = undefined;
         res.json(user)
+        console.log("Data Received");
     })
 
 }
@@ -48,6 +49,8 @@ exports.updateUser = (req, res) => {
             user.salt = undefined;
             user.encry_password = undefined;
             res.json(user)
+            console.log("Hello");
+
         }
     )
 }
