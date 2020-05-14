@@ -14,6 +14,7 @@ exports.getCatagoryById = (req, res, next, id) => {
 
 // Ceate new Catagory
 exports.createCatagory = (req, res) => {
+    console.log("Bala na =============================================");
     const catagory = new Catagory(req.body);
     catagory.save((err, catagory) => {
         if (err) {
