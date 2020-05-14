@@ -5,7 +5,6 @@ var expressJwt = require('express-jwt');
 
 
 // Signup Api
-
 exports.signup = (req, res) => {
 
     const errors = validationResult(req)

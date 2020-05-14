@@ -36,6 +36,7 @@ exports.getUser = (req, res) => {
     return res.json(req.profile)
 }
 
+// Save Updated data in db
 exports.updateUser = (req, res) => {
     User.findByIdAndUpdate(
         { _id: req.profile._id },
@@ -51,7 +52,6 @@ exports.updateUser = (req, res) => {
             // user.encry_password = undefined;
             res.json(user)
             console.log("update User");
-
         }
     )
 }
@@ -67,4 +67,37 @@ exports.userPurchaseList = (req, res) => {
             }
             return res.json(order);
         })
+}
+
+
+// Push Oreder in purchaseList
+exports.PushOrederInPurchaseList = (req, res, next) => {
+    let purchases = []
+    req.body.order.products.forEach(product => {
+        purchases.push({
+            _id: product._id,
+            name: product.name,
+            description: product.description,
+            catagory: product.catagory,
+            quantity: product.quantity,
+            amount: req.body.order.amount,
+            tranction_id: req.body.order.tranction_id,
+
+        })
+    })
+
+    // Store the data in DB
+    User.findOneAndUpdate(
+        { _id: req.profile._id },
+        { $push: { purchases: purchases } },
+        { new: true },
+        (err, purchases) => {
+            if (err) {
+                return res.status(400).json({
+                    error: "Unable to save Purchase List"
+                })
+            }
+            next();
+        }
+    );
 }
