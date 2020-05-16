@@ -1,20 +1,20 @@
 const Catagory = require("../models/catagory")
 
 exports.getCatagoryById = (req, res, next, id) => {
-    Catagory.finById(id).exec((err, cate) => {
+    Catagory.findById(id).exec((err, cate) => {
         if (err) {
             return res.status(400).json({
                 error: "Catagory not found in DB"
             });
         }
-        req.Catagory = cate;
+        req.catagory = cate;
         next();
     })
 };
 
 // Ceate new Catagory
 exports.createCatagory = (req, res) => {
-    console.log("Bala na =============================================");
+    console.log("Bala na");
     const catagory = new Catagory(req.body);
     catagory.save((err, catagory) => {
         if (err) {
@@ -58,6 +58,7 @@ exports.updateCatagory = (req, res) => {
             })
         }
         res.json(updatedCatagory)
+        console.log("Fekku");
     })
 }
 
