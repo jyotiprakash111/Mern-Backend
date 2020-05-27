@@ -4,21 +4,23 @@ const _ = require("lodash");
 const fs = require("fs");
 
 exports.getProcuctById = (req, res, next, id) => {
-    Product.findById(id).exec((err, product) => {
-        if (err) {
-            return res.status(400).json({
-                error: "No Product Found"
-            })
-        }
-        req.product = product;
-        next();
-    });
+    Product.findById(id)
+        .populate("category")
+        .exec((err, product) => {
+            if (err) {
+                return res.status(400).json({
+                    error: "No Product Found"
+                })
+            }
+            req.product = product;
+            next();
+        });
 }
 
-exports.createProduct = (req, res, ) => {
+exports.createProduct = (req, res) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
-    console.log("Hello");
+    console.log("Hello Jyoti");
     form.parse(req, (err, fields, file) => {
         if (err) {
             return res.status(400).json({
@@ -48,9 +50,12 @@ exports.createProduct = (req, res, ) => {
                     error: "File Size Is Too Big!"
                 })
             }
-            product.photo.data = fs.readFileSync(file.photo)
+            product.photo.data = fs.readFileSync(file.photo.path)
             product.photo.contentType = file.photo.type
         }
+        console.log(product);
+
+
         // save to DB
         product.save((err, product) => {
             if (err) {
