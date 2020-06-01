@@ -82,7 +82,7 @@ exports.isAuthenticated = (req, res, next) => {
             error: "ACCESS DENIED"
         })
     }
-    console.log("Baby i need ya");
+    // console.log("Baby i need ya");
     next();
 }
 

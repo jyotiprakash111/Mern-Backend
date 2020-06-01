@@ -30,14 +30,8 @@ exports.createProduct = (req, res) => {
 
         // Destructre the fields
         const { name, description, price, category, stock } = fields;
-        if (
-            !name ||
-            !description ||
-            !price ||
-            !category ||
-            !stock
-        ) {
-            return res.json(400).json({
+        if (!name || !description || !price || !category || !stock) {
+            return res.status(400).json({
                 error: "Please Include All Fields"
             });
         }
@@ -81,3 +75,79 @@ exports.photo = (req, res, next) => {
     }
     next();
 };
+
+// Delete controllers
+exports.deleteProduct = (req, res, ) => {
+    let product = req.product;
+    product.remove((err, deletedProduct) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Failed to Delete The Product"
+            })
+        }
+        res.json({
+            message: "Deletion was Sucessfull",
+            deletedProduct
+        })
+    })
+};
+
+// Update Controller
+exports.updateProduct = (req, res, ) => {
+    let form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+    console.log("Hello Update Product Api");
+
+    form.parse(req, (err, fields, file) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Problem With Image"
+            });
+        };
+
+        // Updation Code
+        let product = req.product;
+        product = _.extend(product, fields)
+        if (file.photo) {
+            if (file.photo.size > 3000000) {
+                return res.status(400).json({
+                    error: "File Size Is Too Big!"
+                })
+            }
+            product.photo.data = fs.readFileSync(file.photo.path)
+            product.photo.contentType = file.photo.type
+        }
+        console.log(product);
+
+
+        // save to DB
+        product.save((err, product) => {
+            if (err) {
+                res.status(400).json({
+                    error: "Updation of Product Failed"
+                })
+            }
+            res.json(product);
+        });
+    });
+}
+
+// Product Listing
+exports.getAllProducts = (req, res) => {
+    let limit = req.query.limit ? parseInt(req.query.limit) : 8
+    let sortBy = ew.query.sortBy ? req.query.sortBy : "_id";
+
+    Product.find()
+        .select("-photo")
+        .populate("category")
+        .sort([[sortBy, "asc"]])
+        .limit(limit)
+        .exec((err, products) => {
+            if (err) {
+                return res.status(400).json({
+                    error: "No Product Found"
+                })
+            }
+            res.json(products);
+        })
+}
