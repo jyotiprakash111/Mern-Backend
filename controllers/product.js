@@ -14,6 +14,7 @@ exports.getProcuctById = (req, res, next, id) => {
             }
             req.product = product;
             next();
+            // console.log("Populated User " + category);
         });
 }
 
@@ -150,4 +151,35 @@ exports.getAllProducts = (req, res) => {
             }
             res.json(products);
         })
+}
+
+exports.getAllUniqueCategories = (req, res) => {
+    Product.distinct("category", {}, (err, category) => {
+        if (err) {
+            return res.status(400).json({
+                error: "No Category Found"
+            })
+        }
+        res.json(category);
+    })
+}
+
+exports.updateStock = (req, res, next) => {
+    let myOperatins = req.body.order.products.map(prod => {
+        return {
+            updateOne: {
+                filter: { _id: prod._id },
+                update: { $inc: { stock: -prod.count, sold: +prod.count } }
+            }
+        }
+    })
+
+    Product.bulkWrite(myOperatins, {}, (err, products) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Bulk Operation Failed"
+            });
+        }
+        next();
+    })
 }

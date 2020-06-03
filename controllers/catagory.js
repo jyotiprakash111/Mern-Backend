@@ -62,6 +62,7 @@ exports.updateCatagory = (req, res) => {
     })
 }
 
+// Remove Category
 exports.removeCatagory = (req, res) => {
     const catagory = req.catagory;
 
