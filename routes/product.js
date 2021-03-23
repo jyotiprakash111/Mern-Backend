@@ -41,7 +41,7 @@ router.delete(
 );
 // Update Route
 router.put(
-  "product/:productId/:userId",
+  "/product/:productId/:userId",
   isSignedIn,
   isAuthenticated,
   isAdmin,
