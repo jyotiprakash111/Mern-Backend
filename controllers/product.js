@@ -5,12 +5,12 @@ const fs = require("fs");
 
 exports.getProcuctById = (req, res, next, id) => {
     Product.findById(id)
-        .populate("category")
+        .populate("catagory")
         .exec((err, product) => {
             if (err) {
                 return res.status(400).json({
                     error: "No Product Found"
-                })
+                });
             }
             req.product = product;
             next();
@@ -78,7 +78,7 @@ exports.photo = (req, res, next) => {
 };
 
 // Delete controllers
-exports.deleteProduct = (req, res, ) => {
+exports.deleteProduct = (req, res,) => {
     let product = req.product;
     product.remove((err, deletedProduct) => {
         if (err) {
@@ -87,14 +87,14 @@ exports.deleteProduct = (req, res, ) => {
             })
         }
         res.json({
-            message: "Deletion was Sucessfull",
+            message: "Product Deleted successfully",
             deletedProduct
         })
     })
 };
 
 // Update Controller
-exports.updateProduct = (req, res, ) => {
+exports.updateProduct = (req, res,) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
     console.log("Hello Update Product Api");
@@ -136,11 +136,12 @@ exports.updateProduct = (req, res, ) => {
 // Product Listing
 exports.getAllProducts = (req, res) => {
     let limit = req.query.limit ? parseInt(req.query.limit) : 8
-    let sortBy = ew.query.sortBy ? req.query.sortBy : "_id";
+    let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
     Product.find()
+    // .select("photo")
         .select("-photo")
-        .populate("category")
+        .populate("catagory")
         .sort([[sortBy, "asc"]])
         .limit(limit)
         .exec((err, products) => {
@@ -154,13 +155,13 @@ exports.getAllProducts = (req, res) => {
 }
 
 exports.getAllUniqueCategories = (req, res) => {
-    Product.distinct("category", {}, (err, category) => {
+    Product.distinct("catagory", {}, (err, catagory) => {
         if (err) {
             return res.status(400).json({
                 error: "No Category Found"
             })
         }
-        res.json(category);
+        res.json(catagory);
     })
 }
 

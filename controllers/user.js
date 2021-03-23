@@ -66,7 +66,7 @@ exports.userPurchaseList = (req, res) => {
                 })
             }
             return res.json(order);
-        })
+        });
 }
 
 
@@ -83,8 +83,8 @@ exports.PushOrederInPurchaseList = (req, res, next) => {
             amount: req.body.order.amount,
             tranction_id: req.body.order.tranction_id,
 
-        })
-    })
+        });
+    });
 
     // Store the data in DB
     User.findOneAndUpdate(
